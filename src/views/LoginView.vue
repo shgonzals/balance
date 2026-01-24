@@ -19,7 +19,7 @@
             required
           ></v-text-field>
 
-          <v-btn type="submit" color="primary" class="mt-4" block>
+          <v-btn :loading="loading" type="submit" color="primary" class="mt-4" block>
             Login
           </v-btn>
 
@@ -40,20 +40,19 @@
 
 <script lang="ts">
 import { ref } from 'vue';
+import { useAuth } from '@/composables/useAuth';
 
 export default {
   setup() {
     const email = ref("")
     const password = ref("")
-    const error = ref("")
+    const { login, loading, error } = useAuth()
 
-    const handleLogin = () => {
-      if (email.value === "admin" && password.value === "1234") {
-        alert("Login successful!")
-        error.value = ""
-        // router.push("/dashboard") más adelante
-      } else {
-        error.value = "Invalid username or password"
+    const handleLogin = async () => {
+      const success = await login(email.value, password.value)
+      if (success) {
+        // Redirección ya manejada en useAuth o puedes añadir lógica extra aquí
+        console.log("Login exitoso")
       }
     }
 
@@ -61,6 +60,7 @@ export default {
       email,
       password,
       error,
+      loading,
       handleLogin
     }
   }
